@@ -103,14 +103,20 @@ public class PublishActivity extends Activity {
 	public void postData() {
 	    // Create a new HttpClient and Post Header
 	    HttpClient httpclient = new DefaultHttpClient();
-	    // TODO: change this
-	    HttpPost httppost = new HttpPost("http://192.168.1.35/script.php");
+	    // TODO: change this to POST
+	    HttpPost httppost = new HttpPost("http://192.168.1.35/exchanges/api_create");
 
 	    try {
 	        // Add your data
 	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-	        nameValuePairs.add(new BasicNameValuePair("id", "12345"));
-	        nameValuePairs.add(new BasicNameValuePair("stringdata", "AndDev is Cool!"));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][title]", "1234512341241243"));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][detail]", "AndDev is Cool!1341243124124124124"));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][tags]", ""));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][lng]", "123"));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][lat]", "123"));	        
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][user_id]", "1"));
+	        nameValuePairs.add(new BasicNameValuePair("data[Exchange][username]", "hhaamm"));
+	        
 	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 	        // Execute HTTP Post Request
