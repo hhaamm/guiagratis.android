@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">¡Bienvenido a Guia Gratis! Usá el botón de menú para ver las opciones.</string>
+    <string name="app_name">Guia Gratis</string>
+    <string name="publish">Publicar</string>
+    <string name="next">Continuar</string>
+    <string name="title">Título</string>
+    <string name="description">Descripción</string>
+    <string name="tags">Tags</string>
+    <string name="previous">Anterior</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="take_photo_text">¿Desea agregar una foto a su publicación?</string>
+
+</resources>
