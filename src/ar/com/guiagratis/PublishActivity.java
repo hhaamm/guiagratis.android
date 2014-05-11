@@ -1,6 +1,24 @@
 package ar.com.guiagratis;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -48,18 +66,17 @@ public class PublishActivity extends Activity {
 			Bitmap myBitmap = BitmapFactory.decodeFile(imageUri.getPath());
 			BitmapDrawable ob = new BitmapDrawable(myBitmap);
 			ImageView myImage = (ImageView) findViewById(R.id.uploadedImage);
-			myImage.setBackgroundDrawable(ob);		
-
-            // android:layout_width="50dp"
-            // android:layout_height="50dp"
+			myImage.setBackgroundDrawable(ob);
 		}	
 	}
 
 	public void btnSendClick(View v) {
 		if (!photoUploaded) {	       
 			Toast.makeText(getApplicationContext(), "Todavía no subiste una foto.", Toast.LENGTH_SHORT).show();
+			postData();
 		} else {
-			Toast.makeText(getApplicationContext(), "Verifica tus datos. ¿Seguro que quieres subir? ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Subiendo ... ", Toast.LENGTH_SHORT).show();
+			postData();
 		}	
 	}
 
@@ -81,5 +98,67 @@ public class PublishActivity extends Activity {
 				Toast.makeText(getApplicationContext(), "Hubo un problema al subir la imágen... ", Toast.LENGTH_SHORT).show();                	
 			}
 		}
+	}
+	
+	public void postData() {
+	    // Create a new HttpClient and Post Header
+	    HttpClient httpclient = new DefaultHttpClient();
+	    // TODO: change this
+	    HttpPost httppost = new HttpPost("http://192.168.1.35/script.php");
+
+	    try {
+	        // Add your data
+	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	        nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+	        nameValuePairs.add(new BasicNameValuePair("stringdata", "AndDev is Cool!"));
+	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+	        // Execute HTTP Post Request
+	        HttpResponse response = httpclient.execute(httppost);
+	        
+	        HttpEntity entity = response.getEntity();
+	        InputStream is = entity.getContent();
+	        
+	        String responseString = convertStreamToString(is);
+	        
+	        JSONObject jObject = new JSONObject(responseString);
+	        
+	        boolean success = jObject.getBoolean("success");
+	        
+	        if (success) {
+	        	Toast.makeText(getApplicationContext(), "¡Genial! ¡Se subió tu pedido!", Toast.LENGTH_SHORT).show();
+	        } else {
+	        	Toast.makeText(getApplicationContext(), "Hubo un problema al comunicarse con el servidor, intenta nuevamente.", Toast.LENGTH_SHORT).show();
+	        }	       
+	    } catch (ClientProtocolException e) {
+	        // TODO Auto-generated catch block
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	    	System.out.println(e.getMessage());
+	    } catch (JSONException e) {
+	    	
+	    }
+	} 
+	
+	private String convertStreamToString(InputStream is) {
+
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	    StringBuilder sb = new StringBuilder();
+
+	    String line = null;
+	    try {
+	        while ((line = reader.readLine()) != null) {
+	            sb.append((line + "\n"));
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            is.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return sb.toString();
 	}
 }
